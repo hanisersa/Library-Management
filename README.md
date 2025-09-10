@@ -1,12 +1,46 @@
-# React + Vite
+# 📚 Library Management Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple and clean web application to manage a library.  
+You can **add books**, **add borrowers**, and view their lists in an easy-to-use interface.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
 
-## Expanding the ESLint configuration
+- ➕ **Add Books** – Fill in book title, author, and other details.  
+- 📚 **Books List** – View all available books in a simple list.  
+- ➕ **Add Borrowers** – Register library members with their info.  
+- 👥 **Borrowers List** – View all registered borrowers.  
+- ℹ️ **About Page** – Learn more about the project.  
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend:** React  
+- **Styling:** CSS / TailwindCSS  
+- **Deployment:** GitHub Pages  
+
+---
+
+## 📸 Screenshots
+
+| Add Books | Books List |
+|-----------|-----------|
+| ![Add Books Screenshot](./screenshots/add-books.png) | ![Books List Screenshot](./screenshots/books-list.png) |
+
+| Add Borrower | Borrowers List |
+|--------------|---------------|
+| ![Add Borrower Screenshot](./screenshots/add-borrower.png) | ![Borrowers List Screenshot](./screenshots/borrowers-list.png) |
+
+*(Replace with your actual screenshots)*
+
+---
+
+## 🏗️ Installation & Setup
+
+1. **Clone the repository**
+
+```bash
+git clone https://github.com/<hanisersa>/Library-Management.git
+cd Library-Management
