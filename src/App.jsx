@@ -1,93 +1,109 @@
-import Header from './components/header'
-import Footer from './components/Footer';
+import { useState, useEffect, useRef } from 'react';
+import Header from './components/header.jsx';
+import Footer from './components/Footer.jsx';
+import { BooksList, BorrowersList } from './components/lists.jsx';
+import AddBookModal from './components/AddBookModal.jsx';
+import AddBorrowerModal from './components/AddBorrowerModal.jsx';
+import About from './components/About.jsx';
 import './index.css';
-import Button from './components/Button';
-import {BooksList,BorrowersList} from './components/lists';
-import About from './components/About';
-import AddBookModal from './components/AddBookModal';
-import AddBorrowerModal from './components/AddBorrowerModal';
-import { useState, useEffect } from 'react';
 
-function App() {
- // central state
- const [books, setBooks] = useState([]);
- const [borrowers, setBorrowers] = useState([]);
+export default function App() {
+	// Core data
+	const [books, setBooks] = useState([]);
+	const [borrowers, setBorrowers] = useState([]);
 
- // ui state
- const [showAddBook, setShowAddBook] = useState(false);
- const [showAddBorrower, setShowAddBorrower] = useState(false);
- const [showBooksList, setShowBooksList] = useState(false);
- const [showBorrowersList, setShowBorrowersList] = useState(false);
+	// UI state
+	const [showAddBook, setShowAddBook] = useState(false);
+	const [showAddBorrower, setShowAddBorrower] = useState(false);
+	const [showBooksList, setShowBooksList] = useState(false);
+	const [showBorrowersList, setShowBorrowersList] = useState(false);
 
- // add handlers with simple ids
- function handleAddBook(book) {
-   const withId = { id: Date.now(), ...book };
-   setBooks(prev => [...prev, withId]);
- }
- function handleAddBorrower(borrower) {
-   const withId = { id: Date.now(), ...borrower };
-   setBorrowers(prev => [...prev, withId]);
- }
+	const booksListRef = useRef(null);
+	const borrowersListRef = useRef(null);
 
- // persistence (optional basic)
- useEffect(()=>{
-   localStorage.setItem('books', JSON.stringify(books));
- },[books]);
- useEffect(()=>{
-   localStorage.setItem('borrowers', JSON.stringify(borrowers));
- },[borrowers]);
- useEffect(()=>{
-   const storedBooks = JSON.parse(localStorage.getItem('books')||'[]');
-   const storedBorrowers = JSON.parse(localStorage.getItem('borrowers')||'[]');
-   if(storedBooks.length) setBooks(storedBooks);
-   if(storedBorrowers.length) setBorrowers(storedBorrowers);
- },[]);
+	// Load from localStorage once
+	useEffect(() => {
+		try {
+			const savedBooks = JSON.parse(localStorage.getItem('books') || '[]');
+			const savedBorrowers = JSON.parse(localStorage.getItem('borrowers') || '[]');
+			if (Array.isArray(savedBooks)) setBooks(savedBooks);
+			if (Array.isArray(savedBorrowers)) setBorrowers(savedBorrowers);
+		} catch { /* ignore parse errors */ }
+	}, []);
 
- function revealBooksList(){
-   setShowBorrowersList(false);
-   setShowBooksList(true);
-   setTimeout(()=>{
-     document.getElementById('books-list')?.scrollIntoView({behavior:'smooth'});
-   },0);
- }
- function revealBorrowersList(){
-   setShowBooksList(false);
-   setShowBorrowersList(true);
-   setTimeout(()=>{
-     document.getElementById('borrowers-list')?.scrollIntoView({behavior:'smooth'});
-   },0);
- }
+	// Persist
+	useEffect(() => { localStorage.setItem('books', JSON.stringify(books)); }, [books]);
+	useEffect(() => { localStorage.setItem('borrowers', JSON.stringify(borrowers)); }, [borrowers]);
 
- return(
-   <>
-   <Header 
-     openAddBook={()=>{setShowAddBook(true); setShowAddBorrower(false);}}
-     openAddBorrower={()=>{setShowAddBorrower(true); setShowAddBook(false);}}
-     openBooksList={revealBooksList}
-     openBorrowersList={revealBorrowersList}
-     goHome={()=>{ 
-       setShowBooksList(false); 
-       setShowBorrowersList(false); 
-       window.scrollTo({top:0, behavior:'smooth'}); 
-     }}
-   />
-   <main className='main-container' id='Home'>
-     <Button openAddBook={()=>{setShowAddBook(true); setShowAddBorrower(false);}} openAddBorrower={()=>{setShowAddBorrower(true); setShowAddBook(false);}} />
+	function handleAddBook(book) {
+		const newBook = { ...book, id: Date.now().toString() };
+		setBooks(s => [newBook, ...s]);
+		setShowAddBook(false);
+	}
 
-     {showAddBook && (
-       <AddBookModal onAdd={(b)=>{handleAddBook(b); setShowAddBook(false);}} onClose={()=>setShowAddBook(false)} />
-     )}
-     {showAddBorrower && (
-       <AddBorrowerModal books={books} onAdd={(br)=>{handleAddBorrower(br); setShowAddBorrower(false);}} onClose={()=>setShowAddBorrower(false)} />
-     )}
+	function handleAddBorrower(borrower) {
+		const newBorrower = { ...borrower, id: Date.now().toString() };
+		setBorrowers(s => [newBorrower, ...s]);
+		setShowAddBorrower(false);
+	}
 
-  {showBooksList && <BooksList books={books} />}
-  {showBorrowersList && <BorrowersList borrowers={borrowers} />}
-  {!showBooksList && !showBorrowersList && <About />}
-   </main>
-  <Footer />
-   </>
- )
+	function openBooksList() {
+		setShowBorrowersList(false);
+		setShowBooksList(true);
+		setTimeout(()=>booksListRef.current?.scrollIntoView({behavior:'smooth'}), 50);
+	}
+	function openBorrowersList() {
+		setShowBooksList(false);
+		setShowBorrowersList(true);
+		setTimeout(()=>borrowersListRef.current?.scrollIntoView({behavior:'smooth'}), 50);
+	}
+	function goHome(){
+		setShowBooksList(false);
+		setShowBorrowersList(false);
+		window.scrollTo({top:0,behavior:'smooth'});
+	}
+
+	return (
+		<div className="app-root">
+			<Header
+				openAddBook={() => setShowAddBook(true)}
+				openAddBorrower={() => setShowAddBorrower(true)}
+				openBooksList={openBooksList}
+				openBorrowersList={openBorrowersList}
+				goHome={goHome}
+			/>
+
+			<main style={{paddingTop:'5rem'}}>
+				{!showBooksList && !showBorrowersList && (
+					<div className="home-actions">
+						<button onClick={()=>setShowAddBook(true)}>Add Book</button>
+						<button onClick={()=>setShowAddBorrower(true)}>Add Borrower</button>
+					</div>
+				)}
+				{showBooksList && (
+					<div ref={booksListRef}><BooksList books={books} /></div>
+				)}
+				{showBorrowersList && (
+					<div ref={borrowersListRef}><BorrowersList borrowers={borrowers} /></div>
+				)}
+				<About />
+			</main>
+
+			<Footer />
+
+			{showAddBook && (
+				<AddBookModal
+					onAdd={handleAddBook}
+					onClose={() => setShowAddBook(false)}
+				/>
+			)}
+			{showAddBorrower && (
+				<AddBorrowerModal
+					books={books}
+					onAdd={handleAddBorrower}
+					onClose={() => setShowAddBorrower(false)}
+				/>
+			)}
+		</div>
+	);
 }
-
-export default App;
