@@ -17,7 +17,24 @@
 }
 
 /* ================= BASE ================= */
-* { box-sizing: border-box; }
+* { 
+	box-sizing: border-box;
+	-webkit-tap-highlight-color: transparent;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+/* Allow text selection for inputs and content areas */
+input, textarea, select, p, h1, h2, h3, h4, h5, h6, span, div[contenteditable] {
+	-webkit-user-select: text;
+	-moz-user-select: text;
+	-ms-user-select: text;
+	user-select: text;
+}
+
 html, body, #root { height: 100%; }
 html { scroll-behavior: smooth; }
 body {
@@ -503,9 +520,6 @@ form button:hover {
 
 form button:active { 
 	transform: translateY(-1px); 
-	box-shadow: 
-		0 4px 15px rgba(132,137,255,.4),
-		0 2px 6px rgba(0,0,0,.3);
 }
 
 form button:focus-visible { 
@@ -571,17 +585,42 @@ footer .copyright { margin-top: 40px; opacity: .55; }
 	font-size: 18px;
 	font-weight: 600;
 	letter-spacing: .4px;
-	background: var(--purple);
+	background: linear-gradient(135deg, var(--purple) 0%, var(--purple-hover) 100%);
 	color: #111;
 	border: none;
 	border-radius: 8px;
 	cursor: pointer;
-	box-shadow: 0 8px 22px -10px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.25);
-	transition: .25s background, .25s transform, .25s box-shadow;
+	box-shadow: 
+		0 8px 22px -10px rgba(132,137,255,.4), 
+		inset 0 0 0 1px rgba(255,255,255,.25),
+		0 4px 12px rgba(0,0,0,.3);
+	transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+	position: relative;
+	overflow: hidden;
 }
+
+.home-actions button::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: -100%;
+	width: 100%;
+	height: 100%;
+	background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+	transition: left 0.5s ease;
+}
+
 .home-actions button:hover { 
-	background: var(--purple-hover); 
-	transform: translateY(-6px); 
+	background: linear-gradient(135deg, var(--purple-hover) 0%, var(--purple) 100%);
+	transform: translateY(-8px) scale(1.02); 
+	box-shadow: 
+		0 12px 30px -8px rgba(132,137,255,.5),
+		inset 0 0 0 1px rgba(255,255,255,.35),
+		0 6px 20px rgba(0,0,0,.4);
+}
+
+.home-actions button:hover::before {
+	left: 100%;
 }
 
 .home-actions button:active { 
